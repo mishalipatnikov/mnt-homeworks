@@ -1,0 +1,19 @@
+---
+clickhouse:
+  hosts:
+    clickhouse-01:
+      ansible_host: 51.250.105.250
+      ansible_user: clickhouse
+      ansible_ssh_private_key_file: /home/admin/ssh/clickhouse
+vector:
+  hosts:
+    vector-01:
+      ansible_host: 158.160.9.28
+      ansible_user: vector
+      ansible_ssh_private_key_file: /home/admin/ssh/vector
+lighthouse:
+  hosts:
+    lighthouse-01:
+      ansible_host: 51.250.20.38
+      ansible_user: lighthouse
+      ansible_ssh_private_key_file: /home/admin/ssh/lighthouse
