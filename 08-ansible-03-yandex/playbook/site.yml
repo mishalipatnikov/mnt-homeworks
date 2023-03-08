@@ -58,6 +58,7 @@
 
 - name: Install NGINX
   hosts: lighthouse
+  tags: nginx
 
   handlers:
     - name: start-nginx
@@ -104,24 +105,10 @@
         name: nginx
         state: restarted
   tasks:
-    - name: Lighthouse | Create directory
-      become: true
-      ansible.builtin.file:
-        path: /var/www/lighthouse
-        state: directory
-        owner: nginx
-        group: nginx
-        mode: "0755"
     - name: Lighthouse | Clone github lighthouse
       git:
         repo: "{{ lighthouse_vcs }}"
-        dest: /var/www/lighthouse/
+        dest: /var/www
         version: master
       become: true
-    - name: Lighthouse | Create config lighthouse
-      template:
-        src: lighthouse.j2
-        dest: /etc/nginx/conf.d/lighthouse.conf
-        mode: 0644
-      become: true
-      notify: reload-nginx
+      notify: restart-nginx
