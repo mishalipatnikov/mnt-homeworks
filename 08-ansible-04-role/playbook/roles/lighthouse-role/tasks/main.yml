@@ -1,0 +1,32 @@
+---
+  - name: NGINX | Install epel-release
+    become: true
+    ansible.builtin.yum:
+      name: epel-release
+      state: present
+  - name: NGINX | Install Nginx
+    become: true
+    ansible.builtin.yum:
+      name: nginx
+      state: present
+    notify: start-nginx
+  - name: NGINX | Install git
+    become: true
+    ansible.builtin.yum:
+      name: git
+      state: present
+    notify: start-nginx
+  - name: NGINX | Create Nginx config
+    become: true
+    template:
+      src: nginx.j2
+      dest: /etc/nginx/nginx.conf
+      mode: 0644
+    notify: restart-nginx
+  - name: Lighthouse | Clone github lighthouse
+    git:
+      repo: "{{ lighthouse_vcs }}"
+      dest: /var/www
+      version: master
+    become: true
+    notify: restart-nginx
