@@ -157,8 +157,31 @@ if __name__ == '__main__':
 
 3. Заполните файл в соответствии с требованиями ansible так, чтобы он выполнял основную задачу: module должен создавать текстовый файл на удалённом хосте по пути, определённом в параметре `path`, с содержимым, определённым в параметре `content`.
 4. Проверьте module на исполняемость локально.
+```commandline
+(venv) [admin@fedora ansible]$ python -m ansible.modules.my_own_module payload.json
+
+{"changed": true, "invocation": {"module_args": {"path": "/tmp/file.txt", "content": "Test text"}}}
+
+```
 5. Напишите single task playbook и используйте module в нём.
 6. Проверьте через playbook на идемпотентность.
+```commandline
+(venv) [admin@fedora ansible]$ ansible-playbook site.yml
+[WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features under development. This is a
+rapidly changing source of code and can become unstable at any point.
+[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+PLAY [test my_own_module] ***************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ******************************************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [run module] ***********************************************************************************************************************************************************************************
+ok: [localhost]
+
+PLAY RECAP ******************************************************************************************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0 
+```
 7. Выйдите из виртуального окружения.
 8. Инициализируйте новую collection: `ansible-galaxy collection init my_own_namespace.yandex_cloud_elk`
 9. В данную collection перенесите свой module в соответствующую директорию.
@@ -168,8 +191,37 @@ if __name__ == '__main__':
 13. Создайте .tar.gz этой collection: `ansible-galaxy collection build` в корневой директории collection.
 14. Создайте ещё одну директорию любого наименования, перенесите туда single task playbook и архив c collection.
 15. Установите collection из локального архива: `ansible-galaxy collection install <archivename>.tar.gz`
+```commandline
+[admin@fedora new_collection]$ ansible-galaxy collection install my_own_namespace-yandex_cloud_elk-1.0.0.tar.gz
+[WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features under development. This is a
+rapidly changing source of code and can become unstable at any point.
+Starting galaxy collection install process
+Process install dependency map
+Starting collection install process
+Installing 'my_own_namespace.yandex_cloud_elk:1.0.0' to '/home/admin/.ansible/collections/ansible_collections/my_own_namespace/yandex_cloud_elk'
+my_own_namespace.yandex_cloud_elk:1.0.0 was installed successfully
+```
 16. Запустите playbook, убедитесь, что он работает.
+```commandline
+[admin@fedora new_collection]$ ansible-playbook test.yml
+[WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features under development. This is a
+rapidly changing source of code and can become unstable at any point.
+[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+PLAY [test my_own_module] ***************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ******************************************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [run module] ***********************************************************************************************************************************************************************************
+ok: [localhost]
+
+PLAY RECAP ******************************************************************************************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0 
+```
 17. В ответ необходимо прислать ссылки на collection и tar.gz архив, а также скриншоты выполнения пунктов 4, 6, 15 и 16.
+1. https://github.com/mishalipatnikov/my_own_collection/tree/1.0.0
+2. https://github.com/mishalipatnikov/my_own_collection
 
 ## Необязательная часть
 
